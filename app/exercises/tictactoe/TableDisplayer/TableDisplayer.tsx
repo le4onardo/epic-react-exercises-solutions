@@ -9,12 +9,13 @@ export default function TableDisplayer({
 }) {
     return <div>
         {
-            table.map((row, x) =>
-                <div>
-                    {row.map((cell, y) => 
-                        <button 
-                            disabled={cell!=='.'} 
-                            onClick={()=>onNewMove(x,y)}
+            table.map((row, xIndex) =>
+                <div key={xIndex}>
+                    {row.map((cell, yIndex) => 
+                        <button
+                            disabled={cell !== '.'}
+                            onClick={()=>onNewMove(xIndex, yIndex)}
+                            key={yIndex}
                         >
                             {cell}
                         </button>
