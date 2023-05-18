@@ -5,12 +5,11 @@ const initialState: TicTacToe = {
     gameIndex: 0,
     pastMoves: [],
     table: [['.','.','.'], ['.','.','.'], ['.','.','.']],
-    gameStatus: 'playing'
 }
 
 function reducer (state: TicTacToe, action) {
     const {type, data} = action;
-    let {pastMoves, gameIndex, gameStatus, table} = state;
+    let {pastMoves, gameIndex, table} = state;
 
     switch(type){
         case 'add_new_move':
@@ -23,22 +22,9 @@ function reducer (state: TicTacToe, action) {
             table[1]=table[1].slice();
             table[2]=table[2].slice();
             table[data.x][data.y] = player;
-            if (
-                table[0][0] === player && table[0][1] === player && table[0][2] === player || 
-                table[1][0] === player && table[1][1] === player && table[1][2] === player ||
-                table[2][0] === player && table[2][1] === player && table[2][2] === player ||
-                table[0][0] === player && table[1][0] === player && table[2][0] === player ||
-                table[0][1] === player && table[1][1] === player && table[2][1] === player ||
-                table[0][2] === player && table[1][2] === player && table[2][2] === player ||
-                table[0][0] === player && table[1][1] === player && table[2][2] === player ||
-                table[0][2] === player && table[1][1] === player && table[2][0] === player
-            ) {
-                gameStatus = player;
-            } else {
-                gameStatus = pastMoves.length === 9? 'draw':  'playing';
-            }
             
-            return { pastMoves, gameIndex, gameStatus, table };
+            
+            return { pastMoves, gameIndex, table };
         
         case 'go_game_state':
             gameIndex = data;
@@ -64,4 +50,31 @@ function reducer (state: TicTacToe, action) {
 
 export function useTicTacToe(): [TicTacToe, Dispatch<any>]{
     return useReducer(reducer, initialState);
+}
+
+
+// SELECTORS:
+
+export function selectGameStatus(state): 'playing' | 'draw' | 'x' | 'o' {
+    const {table, gameIndex} = state;
+
+    // check rows
+    for (let i=0;i<table.length; i++) {
+        if (table[i][0] !== '.' && table[i][0] === table[i][1] && table[i][1] === table[i][2]) 
+            return table[i][0];
+    }
+
+    // check columns
+    for (let i=0;i<table[0].length; i++) {
+        if (table[0][i] !== '.' && table[0][i] === table[1][i] && table[1][i] === table[2][i]) 
+            return table[0][i];
+    }
+
+    if (table[0][0] !== '.' && table[0][0] === table[1][1] && table[1][1] === table[2][2]) 
+        return table[0][0];
+    
+    if (table[2][0] !== '.' && table[2][0] === table[1][1] && table[1][1] === table[0][2]) 
+        return table[2][0];
+
+    return gameIndex === 9 ? 'draw':  'playing';
 }

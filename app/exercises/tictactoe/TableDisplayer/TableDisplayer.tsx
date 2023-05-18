@@ -2,10 +2,12 @@ import React from 'react';
 
 export default function TableDisplayer({
     table,
-    onNewMove
+    onNewMove,
+    disabled
 }:{
     table: ('x' | 'o' | '.')[][],
-    onNewMove: (x, y)=>void
+    onNewMove: (x, y)=>void,
+    disabled: boolean
 }) {
     return <div>
         {
@@ -13,7 +15,7 @@ export default function TableDisplayer({
                 <div key={xIndex}>
                     {row.map((cell, yIndex) => 
                         <button
-                            disabled={cell !== '.'}
+                            disabled={cell !== '.' || disabled}
                             onClick={()=>onNewMove(xIndex, yIndex)}
                             key={yIndex}
                         >
