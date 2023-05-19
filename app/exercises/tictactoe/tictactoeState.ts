@@ -10,22 +10,20 @@ const initialState: TicTacToe = {
 function reducer (state: TicTacToe, action) {
     const {type, data} = action;
     let {pastMoves, gameIndex, table} = state;
-
+    let newState;
     switch(type){
         case 'add_new_move':
             const player = gameIndex%2===0 ? 'x' : 'o';
             pastMoves = pastMoves.slice(0, gameIndex);
             gameIndex += 1;
             pastMoves.push({x: data.x, y: data.y});
-            table = table.slice();
+            table = table.slice(); 
             table[0]=table[0].slice();
             table[1]=table[1].slice();
             table[2]=table[2].slice();
             table[data.x][data.y] = player;
-            
-            
-            return { pastMoves, gameIndex, table };
-        
+            newState = { pastMoves, gameIndex, table };
+            break;
         case 'go_game_state':
             gameIndex = data;
             table = table.slice();
@@ -40,20 +38,34 @@ function reducer (state: TicTacToe, action) {
                         table[x][y]='.'
                 }
             )
-            return {...state, gameIndex, table}
+            newState = {...state, gameIndex, table}
+            break;
         case 'restart':
-            return initialState;
+            newState = initialState;
+            break;
         default: 
-            return {...state} 
+            newState = {...state}
     }
+    localStorage.setItem('state', JSON.stringify(newState));
+    console.log(newState)
+    return newState;
 }
 
 export function useTicTacToe(): [TicTacToe, Dispatch<any>]{
-    return useReducer(reducer, initialState);
+    const prevState = localStorage.getItem('state');
+    let state;
+    if (prevState)
+        state = JSON.parse(prevState) as TicTacToe;
+    
+    return useReducer(reducer, state || initialState);
 }
 
 
+
+
 // SELECTORS:
+
+
 
 export function selectGameStatus(state): 'playing' | 'draw' | 'x' | 'o' {
     const {table, gameIndex} = state;

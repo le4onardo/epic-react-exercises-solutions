@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
-import TableDisplayer from './TableDisplayer/TableDisplayer';
-import MovesSelector from './MovesSelector/MovesSelector';
+import TableDisplayer from './components/TableDisplayer/TableDisplayer';
+import MovesSelector from './components/MovesSelector/MovesSelector';
 import { selectGameStatus, useTicTacToe } from './tictactoeState';
 
 export default function Page() {
